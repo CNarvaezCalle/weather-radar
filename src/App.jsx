@@ -1,6 +1,7 @@
 import './App.css'
 import Clima from './components/Clima'
 import Weather from './components/Weather'
+import Header from './components/Header'
 
 
 
@@ -25,10 +26,10 @@ function App() {
 // navigator.geolocation.getCurrentPosition(coordinadas);
 
    return (
-    <>
-    {/* <h1>{navigator.geolocation.getCurrentPosition(coordinadas)}</h1> */}
-    <Weather />   
-    </>
+    <div className='main__container'>
+      <Header />
+      <Weather />   
+    </div>
   )
 }
 

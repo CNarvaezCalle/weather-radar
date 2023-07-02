@@ -8,7 +8,7 @@ const Weather = () => {
     const [ dataInfo, setDataInfo ] = useState({})
     const [ units, setUnits ] = useState('metric')
     const [ isFarenheit, setIsFarenheit ] = useState(false)
-    const [ buttonText, setButtonText ] = useState("Farenheit")
+    const [ buttonText, setButtonText ] = useState("Change to F°")
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(coords);
@@ -41,38 +41,37 @@ const Weather = () => {
         }
 
         const button = () => {
-            if (buttonText('Farenheit')) {
-                setButtonText('Celcius')
+            if (buttonText === "Change to F°") {
+                setButtonText('Change to C°')
             } else {
-                setButtonText('Farenheit')
+                setButtonText('Change to F°')
             }
         }
 
     return(
         <div className="container">
-            <section>//sensacion termica, humedad, presion, temperatura, temp max, temp min // nombre, pais // nubloso, main(clouds)? // velocidad viento</section>
             {/* CAMBIAR TODO A INGLES DESPUÉS */}
-            <section>
-                <span>Ciudad: {dataInfo.name} </span><span> {dataInfo.sys?.country}</span>
-            </section>
-            <section>
-                <p>Temperatura: {dataInfo.main?.temp}</p>
-                <p>Senación Térmica: {dataInfo.main?.feels_like}</p>
-                <p>Temp. max: {dataInfo.main?.temp_max}</p>
-                <p>Temp. min: {dataInfo.main?.temp_min}</p>
-                <p>Humedad: {dataInfo.main?.humidity}</p>
-                <p>Presión: {dataInfo.main?.pressure}</p>
-            </section>
-            <section>
+            <div className='data__container'>
+              <div className="data">   
+                <p className='temp'>{Math.round(dataInfo.main?.temp)}</p>
+                {/* <p className='feels__like'>Senación Térmica: {dataInfo.main?.feels_like}</p> */}
+                {/* <p className='temp__max'>Temp. max: {dataInfo.main?.temp_max}</p> */}
+                {/* <p className='temp__min'>Temp. min: {dataInfo.main?.temp_min}</p> */}
+                {/* <p className='humidity'>Humedad: {dataInfo.main?.humidity}</p> */}
+                  
+                    <p className='wind'>{dataInfo.wind?.speed}</p>
+                    <p className='main'>{dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.main}</p>
+                    <p className='pressure'>{dataInfo.main?.pressure}</p>
+            
                 {/* fallo en firefox */}
-                <p>Descripción: {dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0].description}</p>
-                <p>Nubes: {dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.main}</p>
-            </section>
-            <section>
-                <p>Viento: {dataInfo.wind?.speed}</p>
-            </section>
-            <button onClick={() => {button(); unit()}}>{buttonText}</button>
+                <p className='name'>{dataInfo.name}, {dataInfo.sys?.country}</p>
+                <p className='description'>{dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0].description}</p>
+              </div>
+            </div>
+                
+            <button className='unit__button' onClick={() => {button(); unit()}}>{buttonText}</button>
         </div>
+            
     )
 }
 
