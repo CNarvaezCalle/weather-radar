@@ -1,6 +1,6 @@
 import './App.css'
 import Weather from './components/Weather'
-import Header from './components/Header'
+import Loader from './components/Loader'
 
 
 
@@ -8,10 +8,12 @@ function App() {
 
 
    return (
+    <>
     <div className='main__container'>
       {/* <Header /> */}
       <Weather />   
     </div>
+    </>
   )
 }
 

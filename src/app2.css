@@ -152,14 +152,17 @@
   .name{
     font-size: 1.2rem;
     margin-top: 0.5rem;
-    width: fit-content;
+    margin-right: 1rem;
+    min-width: 1000px;
   }
   
   .description{
     font-size: 1.05rem;
     align-self: flex-end;
     margin-right: 0.5rem;
-    bottom: 17px;
+    margin-bottom: 17px;
+    bottom: 19px;
+    max-width: 20px;
   }
   
   .button__container{

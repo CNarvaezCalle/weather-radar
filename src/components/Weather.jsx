@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Loader from "./Loader";
 
 const Weather = () => {
   const apiKey = "a3888691b1409d370827f0cfc2b82562";
@@ -7,15 +8,20 @@ const Weather = () => {
   const [units, setUnits] = useState("metric");
   const [isFarenheit, setIsFarenheit] = useState(false);
   const [buttonText, setButtonText] = useState("Change to F°");
+  const [isLoading, setIsLoading] = useState(true);
+  const [click, setClick] = useState(true)
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(coords);
-  }, [isFarenheit, buttonText]); //termina aqui o solo el geo mas arriba? -- isFarenheit o units??
+  }, [isFarenheit, buttonText, click]); //termina aqui o solo el geo mas arriba? -- isFarenheit o units??
 
   function coords(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     // const moreOrLess = `${position.coords.accuracy} meters?`
+
+
+    setIsLoading(true);
 
     axios
       .get(
@@ -24,8 +30,35 @@ const Weather = () => {
       .then((resp) => {
         console.log(resp.data);
         setDataInfo(resp.data);
+        
+        setIsLoading(false);
       })
       .catch((err) => console.error(err));
+  }
+
+  
+
+  // const img = () => {
+  //   let pic = ''
+  //   if(dataInfo.weather[0].id >= 200 && dataInfo.weather[0].id <= 232 ){
+  //     pic = '/1.svg';
+  //   } else {
+  //     pic = '/2.svg'
+  //   }
+  // }
+
+  // img();
+
+  // dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.icon
+
+  const darkMode = () => {
+    if(click){
+      setClick(!click)
+      document.body.style.background = 'radial-gradient(#53388F, #2F2958)'
+    } else{
+      setClick(!click)
+      document.body.style.background = 'radial-gradient(#D5F3FF, #51B4E8)'
+    }
   }
 
   const unit = () => {
@@ -48,10 +81,11 @@ const Weather = () => {
 
   return (
     <div className="container">
+      {isLoading && <Loader />}
       <div className="header__container">
         <div>
           <h1 className="header__title">Weather app</h1>
-          <button className="header__darkmode">luz</button>
+          <button className="header__darkmode" onClick={darkMode}>luz</button>
         </div>
         <input
           className="header__search"
@@ -62,34 +96,39 @@ const Weather = () => {
       {/* CAMBIAR TODO A INGLES DESPUÉS */}
       <div className="data__container">
         <div className="data">
-          <p className="temp">{Math.round(dataInfo.main?.temp)}</p>
-          <p className="wind">{dataInfo.wind?.speed}</p>
+          <div className="temp__container">
+          <p className="temp">{Math.round(dataInfo.main?.temp)} {isFarenheit ? "°F" : "°C"}</p>
+          {/* <img className="imagen" src={process.env.PUBLIC_URL + pic} alt="" />   */}
+          </div>
+          <p className="wind">Wind: {dataInfo.wind?.speed}</p>
           <p className="main">
             {dataInfo.weather &&
               dataInfo.weather[0] &&
               dataInfo.weather[0]?.main}
           </p>
-          <p className="pressure">{dataInfo.main?.pressure}</p>
+          <p className="pressure">Pressure: {dataInfo.main?.pressure}</p>
           {/* fallo en firefox */}
-          <p className="name">
-            {dataInfo.name}, {dataInfo.sys?.country}
-          </p>
-          <p className="description">
-            {dataInfo.weather &&
-              dataInfo.weather[0] &&
-              dataInfo.weather[0].description}
-          </p>
+          <div className="detail__container">
+            <span className="name">
+              {dataInfo.name}, {dataInfo.sys?.country}
+            </span>
+            <span className="description">
+              {dataInfo.weather &&
+                dataInfo.weather[0] &&
+                dataInfo.weather[0].description}
+            </span>
+          </div>
         </div>
         {/* <div className="button"> */}
-          <button
-            className="unit__button"
-            onClick={() => {
-              button();
-              unit();
-            }}
-          >
-            {buttonText}
-          </button>
+        <button
+          className="unit__button"
+          onClick={() => {
+            button();
+            unit();
+          }}
+        >
+          {buttonText}{isLoading && <Loader />}
+        </button>
         {/* </div> */}
       </div>
     </div>
