@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./Loader";
+import Search from "./Search";
 
 const Weather = () => {
   const apiKey = "a3888691b1409d370827f0cfc2b82562";
@@ -12,6 +13,7 @@ const Weather = () => {
   const [isDark, setIsDark] = useState(false)
   const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
   let value;
+  const [search, setSearch] = useState('');
 
   // const unitsValue = isFarenheit ? "imperial" : "metric";
   
@@ -32,29 +34,6 @@ const Weather = () => {
     .then((resp) => {
       console.log(resp.data);
       setDataInfo(resp.data);
-
-      // if ( dataInfo?.weather[0]?.id >= 200 && dataInfo?.weather[0]?.id <= 299 ) {
-      //   value = img[8]
-      // } else if ( dataInfo?.weather[0]?.id >= 300 && dataInfo?.weather[0]?.id <= 399 ) {
-      //   value = img[5]
-      // } else if ( dataInfo?.weather[0]?.id >= 500 && dataInfo?.weather[0]?.id <= 504 && dataInfo?.weather[0]?.id >= 520 && dataInfo?.weather[0]?.id <= 531 ) {
-      //   value = img[4]
-      // }  
-      // } else if ( dataInfo.weather[0]?.id >= 600 && dataInfo.weather[0]?.id <= 699 || dataInfo.weather[0]?.id == 511 ) {
-      //   value = img[6]  
-      // } else if ( dataInfo.weather[0]?.id >= 701 && dataInfo.weather[0]?.id <= 799) {
-      //   value = img[7]
-      // } else if ( dataInfo.weather[0]?.id == 800) {
-      //   value = img[0]
-      // } else if ( dataInfo.weather[0]?.id == 801) {
-      //   value = img[1]
-      // } else if ( dataInfo.weather[0]?.id == 802) {
-      //   value = img[2]  
-      // } else if ( dataInfo.weather[0]?.id >= 803 && dataInfo.weather[0]?.id <= 899) {
-      //   value = img[3]   
-      // } else {
-      //   value = img[6]
-      // }
      
       setIsLoading(false);
     })
@@ -102,6 +81,33 @@ const Weather = () => {
     }
   };
 
+  const citySearch = () => {
+    setSearch()
+  };
+
+
+
+  if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 200 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 299) {
+    value = img[8]
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 300 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 399) { 
+    value = img[5]
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 500 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 504 || (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 520 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 531) { 
+    value = img[4]
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 600 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 699 || (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) == 511) { 
+    value = img[6]
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 701 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 799) { 
+    value = img[7]
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) == 800) { 
+    value = img[0]  
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) == 801) { 
+    value = img[1]  
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) == 802) { 
+    value = img[2]    
+  } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 803 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 899) { 
+    value = img[3]
+  } else {
+    value = img[6]
+  }  
 
 
 
@@ -116,15 +122,16 @@ const Weather = () => {
         <input
           className="header__search"
           type="search"
-          placeholder="      Search your city"
+          placeholder="Search your city"
+          // value={search} 
         />
       </div>
       {/* CAMBIAR TODO A INGLES DESPUÉS */}
       <div className="data__container">
         <div className={`${ isDark ? "data__darkmode" : "data"}`}>
           <div className="temp__container">
-          <p className="temp">{isFarenheit ? Math.floor((Math.round(dataInfo.main?.temp)*1.8)+32) + "°F" : Math.round(dataInfo.main?.temp)+ "°C"}</p>
-            <img src={value}  alt="" />
+          <p className="temp">{isFarenheit ? Math.floor((Math.round(dataInfo.main?.temp)*1.8)+32) + "°f" : Math.round(dataInfo.main?.temp)+ "°c"}</p>
+            <img className="imagen" src={value}  alt="" />
           {/* <img className="imagen" src={process.env.PUBLIC_URL + pic} alt="" />   */}
           </div>
           <p className="wind">Wind: {dataInfo.wind?.speed}</p>
