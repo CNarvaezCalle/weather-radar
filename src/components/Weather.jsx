@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./Loader";
-import Search from "./Search";
+
 
 const Weather = () => {
   const apiKey = "a3888691b1409d370827f0cfc2b82562";
@@ -12,8 +12,7 @@ const Weather = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDark, setIsDark] = useState(false)
   const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
-  let value;
-  const [search, setSearch] = useState('');
+  const [input, setInput] = useState(' ');
 
   // const unitsValue = isFarenheit ? "imperial" : "metric";
   
@@ -40,6 +39,23 @@ const Weather = () => {
     .catch((err) => console.log(err))
   }
 
+  // SEARCH BAR //
+
+
+
+  function search() {
+   
+    axios
+    .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
+    .then((resp) => {
+      console.log(resp.data);
+      setDataInfo(resp.data);
+     
+      setIsLoading(false);
+    })
+    .catch((err) => console.log(err))
+  
+  }
   
     // const unitsValue = isFarenheit ? "imperial" : "metric";
     // setIsLoading(true);
@@ -81,11 +97,10 @@ const Weather = () => {
     }
   };
 
-  const citySearch = () => {
-    setSearch()
-  };
 
+  
 
+  let value;
 
   if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 200 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 299) {
     value = img[8]
@@ -109,7 +124,7 @@ const Weather = () => {
     value = img[6]
   }  
 
-
+  
 
   return (
     <div className={`${ isDark ? "container__darkmode" : "container"}`}>
@@ -119,12 +134,19 @@ const Weather = () => {
           <h1 className="header__title">Weather app</h1>
           <button className="header__darkmode" onClick={darkmode}>{isDark ? <i className='bx bxs-sun' style={{color:'white'}}></i> : <i className='bx bxs-moon' style={{color:'white'}}></i> } </button>
         </div>
+        <div className="botones">
+          {/*/////////////////////////////////*/}
         <input
           className="header__search"
-          type="search"
+          type="text"
           placeholder="Search your city"
-          // value={search} 
+          value={input} 
+          onChange={(e) => setInput(e.target.value)}
+          // onkeyPress={handleKeyPress}
+      
         />
+        <button type="submit" className="botones" onClick={search}>Search</button>
+        </div>
       </div>
       {/* CAMBIAR TODO A INGLES DESPUÉS */}
       <div className="data__container">

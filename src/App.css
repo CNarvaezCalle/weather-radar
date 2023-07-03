@@ -39,6 +39,11 @@ button {
   outline: none;
 }
 
+.botones{
+  height: 199px;
+  width: 199px;
+}
+
 /* Loader */
 
 .lds-ripple {
