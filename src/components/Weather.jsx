@@ -10,7 +10,7 @@ const Weather = () => {
   const [buttonText, setButtonText] = useState("Change to F°");
   const [isLoading, setIsLoading] = useState(true);
   const [isDark, setIsDark] = useState(false)
-  const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"]
+  const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
   let value;
 
   // const unitsValue = isFarenheit ? "imperial" : "metric";
@@ -33,13 +33,13 @@ const Weather = () => {
       console.log(resp.data);
       setDataInfo(resp.data);
 
-      if ( dataInfo?.weather[0]?.id >= 200 && dataInfo?.weather[0]?.id <= 299 ) {
-        value = img[8]
-      } else if ( dataInfo?.weather[0]?.id >= 300 && dataInfo?.weather[0]?.id <= 399 ) {
-        value = img[5]
-      } else if ( dataInfo?.weather[0]?.id >= 500 && dataInfo?.weather[0]?.id <= 504 && dataInfo?.weather[0]?.id >= 520 && dataInfo?.weather[0]?.id <= 531 ) {
-        value = img[4]
-      }  
+      // if ( dataInfo?.weather[0]?.id >= 200 && dataInfo?.weather[0]?.id <= 299 ) {
+      //   value = img[8]
+      // } else if ( dataInfo?.weather[0]?.id >= 300 && dataInfo?.weather[0]?.id <= 399 ) {
+      //   value = img[5]
+      // } else if ( dataInfo?.weather[0]?.id >= 500 && dataInfo?.weather[0]?.id <= 504 && dataInfo?.weather[0]?.id >= 520 && dataInfo?.weather[0]?.id <= 531 ) {
+      //   value = img[4]
+      // }  
       // } else if ( dataInfo.weather[0]?.id >= 600 && dataInfo.weather[0]?.id <= 699 || dataInfo.weather[0]?.id == 511 ) {
       //   value = img[6]  
       // } else if ( dataInfo.weather[0]?.id >= 701 && dataInfo.weather[0]?.id <= 799) {
