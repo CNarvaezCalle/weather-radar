@@ -10,9 +10,10 @@ const Weather = () => {
   const [isFarenheit, setIsFarenheit] = useState(false);
   const [buttonText, setButtonText] = useState("Change to F°");
   const [isLoading, setIsLoading] = useState(true);
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(false);
   const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
   const [input, setInput] = useState(' ');
+  const [searchInfo, setSearchInfo] = useState({});
 
   // const unitsValue = isFarenheit ? "imperial" : "metric";
   
@@ -49,7 +50,7 @@ const Weather = () => {
     .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
     .then((resp) => {
       console.log(resp.data);
-      setDataInfo(resp.data);
+      setSearchInfo(resp.data[0]);
      
       setIsLoading(false);
     })
@@ -156,7 +157,7 @@ const Weather = () => {
             <img className="imagen" src={value}  alt="" />
           {/* <img className="imagen" src={process.env.PUBLIC_URL + pic} alt="" />   */}
           </div>
-          <p className="wind">Wind: {dataInfo.wind?.speed}</p>
+          <p className="wind">Wind: {Object.keys(searchInfo).length > 0 ? searchInfo.wind?.speed :dataInfo.wind?.speed} </p>
           <p className="main">
             {dataInfo.weather &&
               dataInfo.weather[0] &&
@@ -166,7 +167,7 @@ const Weather = () => {
           {/* fallo en firefox */}
           <div className="detail__container">
             <span className="name">
-              {dataInfo.name}, {dataInfo.sys?.country}
+            {Object.keys(searchInfo).length > 0 ? searchInfo.name : dataInfo.name}, {dataInfo.sys?.country}
             </span>
             <span className="description">
               {dataInfo.weather &&
