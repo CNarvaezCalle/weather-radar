@@ -120,17 +120,18 @@ const Realweather = () => {
   }  
 
   
-
+  //
   return (
     <div className={`${ isDark ? "container__darkmode" : "container"}`}>
       {isLoading && <Loader />}
       <div className="header__container">
-        <div>
+        <div className="header__container--title">
           <h1 className="header__title">Weather app</h1>
           <button className="header__darkmode" onClick={darkmode}>{isDark ? <i className='bx bxs-sun' style={{color:'white'}}></i> : <i className='bx bxs-moon' style={{color:'white'}}></i> } </button>
         </div>
-        <div className="botones">
+        <div className="search__container">
           {/*/////////////////////////////////*/}
+          <button type="submit" className="searcher__button" onClick={search}><i className='bx bx-search-alt' style={{color:'white'}}></i></button>
         <input
           className="header__search"
           type="text"
@@ -138,10 +139,7 @@ const Realweather = () => {
           value={input} 
           onChange={(e) => setInput(e.target.value)}
           // onkeyPress={handleKeyPress}
-      
         />
-        {/* {() =>{ search(); show();}} */}
-        <button type="submit" className="botones" onClick={search}>Search</button>
         </div>
       </div>
       {/* CAMBIAR TODO A INGLES DESPUÉS */}
@@ -152,7 +150,8 @@ const Realweather = () => {
             <img className="imagen" src={value}  alt="" />
           {/* <img className="imagen" src={process.env.PUBLIC_URL + pic} alt="" />   */}
           </div>
-          <p className="wind">Wind: {Object.keys(searchInfo).length > 0 ? searchInfo.wind?.speed :dataInfo.wind?.speed} </p>
+          <p className="wind">Wind: {dataInfo.wind?.speed} </p>
+          {/* <p className="wind">Wind: {Object.keys(searchInfo).length > 0 ? searchInfo.wind?.speed :dataInfo.wind?.speed} </p> */}
           <p className="main">
             {dataInfo.weather &&
               dataInfo.weather[0] &&
@@ -162,7 +161,7 @@ const Realweather = () => {
           {/* fallo en firefox */}
           <div className="detail__container">
             <span className="name">
-              {dataInfo.sys?.country}
+              {dataInfo.name} {dataInfo.sys?.country} 
             {/* {Object.keys(searchInfo).length > 0 ? searchInfo.name : dataInfo.name}, {dataInfo.sys?.country} */}
             </span>
             <span className="description">
