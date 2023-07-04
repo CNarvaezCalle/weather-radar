@@ -21,20 +21,27 @@ const Weather = () => {
   
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(coords);
-  }, [busqueda]); //termina aqui o solo el geo mas arriba? -- isFarenheit o units??
+  }, [busqueda]);
 
 
-  
+  function search() { 
+    setBusqueda(!busqueda)
+    axios
+    .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
+    .then((resp) => {
+        console.log(resp.data);
+        setSearchInfo(resp.data[0]);
+        // let latitude =  searchInfo.lat
+        // let longitude = searchInfo.lon
+        setIsLoading(false);
+    })
+    .catch((err) => console.log(err))
+  }
 
-
-
-
-
-  
 
 
   function coords(position) {
-    if (busqueda) {
+    if (searchInfo.lat != undefined) {
        const latitude =  searchInfo.lat
        const longitude = searchInfo.lon
 
@@ -42,6 +49,7 @@ const Weather = () => {
     .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=es&units=metric`)
     .then((resp) => {
       console.log(resp.data);
+      console.log(searchInfo)
       setDataInfo(resp.data);
      
       setIsLoading(false);
@@ -73,19 +81,7 @@ const Weather = () => {
 
   // SEARCH BAR //
 
-  function search() { 
-    setBusqueda(!busqueda)
-    axios
-    .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
-    .then((resp) => {
-        console.log(resp.data);
-        setSearchInfo(resp.data[0]);
-        let latitude =  searchInfo.lat
-        let longitude = searchInfo.lon
-        setIsLoading(false);
-    })
-    .catch((err) => console.log(err))
-  }
+ 
 
   // function search() {
    
@@ -184,7 +180,7 @@ const Weather = () => {
           className="header__search"
           type="text"
           placeholder="Search your city"
-          // value={input} 
+          value={input} 
           onChange={(e) => setInput(e.target.value)}
           // onkeyPress={handleKeyPress}
       
