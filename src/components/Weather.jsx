@@ -3,6 +3,7 @@ import axios from "axios";
 import Loader from "./Loader";
 
 
+
 const Weather = () => {
   const apiKey = "a3888691b1409d370827f0cfc2b82562";
   const [dataInfo, setDataInfo] = useState({});
@@ -12,19 +13,43 @@ const Weather = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDark, setIsDark] = useState(false);
   const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
-  const [input, setInput] = useState(' ');
+  const [input, setInput] = useState('');
   const [searchInfo, setSearchInfo] = useState({});
+  const [busqueda, setBusqueda] = useState(false)
 
   // const unitsValue = isFarenheit ? "imperial" : "metric";
   
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(coords);
-  }, []); //termina aqui o solo el geo mas arriba? -- isFarenheit o units??
+  }, [busqueda]); //termina aqui o solo el geo mas arriba? -- isFarenheit o units??
 
 
   
 
+
+
+
+
+  
+
+
   function coords(position) {
+    if (busqueda) {
+       const latitude =  searchInfo.lat
+       const longitude = searchInfo.lon
+
+    axios
+    .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=es&units=metric`)
+    .then((resp) => {
+      console.log(resp.data);
+      setDataInfo(resp.data);
+     
+      setIsLoading(false);
+    })
+    .catch((err) => console.log(err))
+
+    } else {
+      
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     // const moreOrLess = `${position.coords.accuracy} meters?`
@@ -39,24 +64,42 @@ const Weather = () => {
     })
     .catch((err) => console.log(err))
   }
+}  
+
+
+
+
+
 
   // SEARCH BAR //
 
-
-
-  function search() {
-   
+  function search() { 
+    setBusqueda(!busqueda)
     axios
     .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
     .then((resp) => {
-      console.log(resp.data);
-      setSearchInfo(resp.data[0]);
-     
-      setIsLoading(false);
+        console.log(resp.data);
+        setSearchInfo(resp.data[0]);
+        let latitude =  searchInfo.lat
+        let longitude = searchInfo.lon
+        setIsLoading(false);
     })
     .catch((err) => console.log(err))
-  
   }
+
+  // function search() {
+   
+  //   axios
+  //   .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
+  //   .then((resp) => {
+  //     console.log(resp.data);
+  //     setSearchInfo(resp.data[0]);
+     
+  //     setIsLoading(false);
+  //   })
+  //   .catch((err) => console.log(err))
+  
+  // }
   
     // const unitsValue = isFarenheit ? "imperial" : "metric";
     // setIsLoading(true);
@@ -141,7 +184,7 @@ const Weather = () => {
           className="header__search"
           type="text"
           placeholder="Search your city"
-          value={input} 
+          // value={input} 
           onChange={(e) => setInput(e.target.value)}
           // onkeyPress={handleKeyPress}
       
@@ -167,7 +210,8 @@ const Weather = () => {
           {/* fallo en firefox */}
           <div className="detail__container">
             <span className="name">
-            {Object.keys(searchInfo).length > 0 ? searchInfo.name : dataInfo.name}, {dataInfo.sys?.country}
+              {dataInfo.sys?.country}
+            {/* {Object.keys(searchInfo).length > 0 ? searchInfo.name : dataInfo.name}, {dataInfo.sys?.country} */}
             </span>
             <span className="description">
               {dataInfo.weather &&
