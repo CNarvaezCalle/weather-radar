@@ -1,6 +1,7 @@
 import './App.css'
 import Weather from './components/Weather'
 import Loader from './components/Loader'
+import Realweather from './components/Reweather'
 
 
 
@@ -12,7 +13,8 @@ function App() {
     <>
     <div className='main__container'>
       {/* <Header /> */}
-      <Weather />   
+      {/* <Weather />  */}
+      <Realweather />  
     </div>
     </>
   )
