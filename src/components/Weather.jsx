@@ -40,7 +40,7 @@ const Weather = () => {
 
   const search = () => {
     axios
-      .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
+      .get(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
       .then((resp) => {
         if (resp.data[0] === undefined) {
           alert("No se encuentra la ciudad, por favor intenta otro nombre");
