@@ -14,112 +14,51 @@ const Weather = () => {
   const [isDark, setIsDark] = useState(false);
   const img = ["/1.svg" ,"/2.svg" ,"/3.svg" ,"/4.svg" ,"/5.svg" ,"/6.svg" ,"/7.svg" ,"/8.svg" ,"/9.svg"];
   const [input, setInput] = useState('');
-  const [searchInfo, setSearchInfo] = useState({});
-  const [busqueda, setBusqueda] = useState(false)
 
-  // const unitsValue = isFarenheit ? "imperial" : "metric";
-  
+
+
+
+  // Obteniendo las coordenadas del usuario y llamando a la API
+
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(coords);
-  }, [busqueda]);
+    navigator.geolocation.getCurrentPosition((position) => {
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&lang=es&units=metric`
+        )
+        .then((resp) => {
+          console.log(resp.data);
+          setDataInfo(resp.data);
+  
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err))
+    });
+  }, []);
 
+  // Busqueda de API mediante nombre de ciudad, se reciben datos incompletos por lo que se usa la longitud y latitud de esa busqueda para usarse dentro de la API principal
 
-  function search() { 
-    setBusqueda(!busqueda)
+  const search = () => {
     axios
-    .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
-    .then((resp) => {
+      .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
+      .then((resp) => {
         console.log(resp.data);
-        setSearchInfo(resp.data[0]);
-        // let latitude =  searchInfo.lat
-        // let longitude = searchInfo.lon
+        setIsLoading(true);
+  
+        return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${resp.data[0].lat}&lon=${resp.data[0].lon}&appid=${apiKey}&lang=es&units=metric`);
+      })
+      .then((resp) => {
+        console.log(resp.data);
+        setDataInfo(resp.data);
         setIsLoading(false);
-    })
-    .catch((err) => console.log(err))
-  }
+      })
+      .catch((err) => console.log(err));
+  };
 
 
-
-  function coords(position) {
-    if (searchInfo.lat != undefined) {
-       const latitude =  searchInfo.lat
-       const longitude = searchInfo.lon
-
-    axios
-    .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=es&units=metric`)
-    .then((resp) => {
-      console.log(resp.data);
-      console.log(searchInfo)
-      setDataInfo(resp.data);
-     
-      setIsLoading(false);
-    })
-    .catch((err) => console.log(err))
-
-    } else {
-      
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    // const moreOrLess = `${position.coords.accuracy} meters?`
-
-    axios
-    .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&lang=es&units=metric`)
-    .then((resp) => {
-      console.log(resp.data);
-      setDataInfo(resp.data);
-     
-      setIsLoading(false);
-    })
-    .catch((err) => console.log(err))
-  }
-}  
+// Funciones de modo oscuro y cambio de farenheit a centigrados
 
 
-
-
-
-
-  // SEARCH BAR //
-
- 
-
-  // function search() {
-   
-  //   axios
-  //   .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
-  //   .then((resp) => {
-  //     console.log(resp.data);
-  //     setSearchInfo(resp.data[0]);
-     
-  //     setIsLoading(false);
-  //   })
-  //   .catch((err) => console.log(err))
-  
-  // }
-  
-    // const unitsValue = isFarenheit ? "imperial" : "metric";
-    // setIsLoading(true);
-
-
-  // const darkMode = () => {
-  //   if(click){
-  //     setClick(!click)
-  //     document.body.style.background = 'radial-gradient(#53388F, #2F2958)'
-  //   } else{
-  //     setClick(!click)
-  //     document.body.style.background = 'radial-gradient(#D5F3FF, #51B4E8)'
-  //   }
-  // }
-
-  // const unit = () => {
-  //   if (isFarenheit) {
-  //     setIsFarenheit(!isFarenheit);
-  //     setUnits("metric");
-  //   } else {
-  //     setIsFarenheit(!isFarenheit);
-  //     setUnits("imperial");
-  //   }
-  // };
 
   const darkmode = () => {
     setIsDark(!isDark)
@@ -138,7 +77,7 @@ const Weather = () => {
   };
 
 
-  
+// Guardado de la imagen a usarse en una variable dependiendo del codigo usado en la API principal debido a que se usan imágenes diferentes a las de la API   
 
   let value;
 
@@ -161,42 +100,38 @@ const Weather = () => {
   } else if ((dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) >= 803 && (dataInfo.weather && dataInfo.weather[0] && dataInfo.weather[0]?.id) <= 899) { 
     value = img[3]
   } else {
-    value = img[6]
+    value = img[2]
   }  
 
   
-
+  
   return (
     <div className={`${ isDark ? "container__darkmode" : "container"}`}>
       {isLoading && <Loader />}
       <div className="header__container">
-        <div>
+        <div className="header__container--title">
           <h1 className="header__title">Weather app</h1>
-          <button className="header__darkmode" onClick={darkmode}>{isDark ? <i className='bx bxs-sun' style={{color:'white'}}></i> : <i className='bx bxs-moon' style={{color:'white'}}></i> } </button>
+          <button className="header__darkmode" onClick={darkmode}>{isDark ? <i className='bx bxs-sun bx-sm' style={{color:'white'}}></i> : <i className='bx bxs-moon bx-sm' style={{color:'white'}}></i> } </button>
         </div>
-        <div className="botones">
-          {/*/////////////////////////////////*/}
+        <div className="search__container">
+          <button type="submit" className="searcher__button" onClick={search}><i className='bx bx-search-alt bx-sm' style={{color:'white'}}></i></button>
         <input
-          className="header__search"
+          className={`${ isDark ? "header__search--darkmode" : "header__search"}`}
           type="text"
           placeholder="Search your city"
           value={input} 
           onChange={(e) => setInput(e.target.value)}
-          // onkeyPress={handleKeyPress}
-      
         />
-        <button type="submit" className="botones" onClick={search}>Search</button>
         </div>
       </div>
-      {/* CAMBIAR TODO A INGLES DESPUÉS */}
       <div className="data__container">
         <div className={`${ isDark ? "data__darkmode" : "data"}`}>
           <div className="temp__container">
           <p className="temp">{isFarenheit ? Math.floor((Math.round(dataInfo.main?.temp)*1.8)+32) + "°f" : Math.round(dataInfo.main?.temp)+ "°c"}</p>
             <img className="imagen" src={value}  alt="" />
-          {/* <img className="imagen" src={process.env.PUBLIC_URL + pic} alt="" />   */}
           </div>
-          <p className="wind">Wind: {Object.keys(searchInfo).length > 0 ? searchInfo.wind?.speed :dataInfo.wind?.speed} </p>
+          <p className="wind">Wind: {dataInfo.wind?.speed} </p>
+          {/* <p className="wind">Wind: {Object.keys(searchInfo).length > 0 ? searchInfo.wind?.speed :dataInfo.wind?.speed} </p> */}
           <p className="main">
             {dataInfo.weather &&
               dataInfo.weather[0] &&
@@ -206,7 +141,7 @@ const Weather = () => {
           {/* fallo en firefox */}
           <div className="detail__container">
             <span className="name">
-              {dataInfo.sys?.country}
+              {dataInfo.name} {dataInfo.sys?.country} 
             {/* {Object.keys(searchInfo).length > 0 ? searchInfo.name : dataInfo.name}, {dataInfo.sys?.country} */}
             </span>
             <span className="description">
@@ -216,21 +151,19 @@ const Weather = () => {
             </span>
           </div>
         </div>
-        {/* <div className="button"> */}
         <button
           className={`${ isDark ? "unit__button__darkmode" : "unit__button"}`}
           onClick={() => {
             {/*unit();*/}
             changeUnit();
             button();
-          }}
-        >
+          }}>
           {buttonText}
         </button>
-        {/* </div> */}
       </div>
     </div>
   )
 }
 
 export default Weather;
+
