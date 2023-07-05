@@ -42,8 +42,13 @@ const Weather = () => {
     axios
       .get(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${apiKey}`)
       .then((resp) => {
-        console.log(resp.data);
-        setIsLoading(true);
+        if (resp.data[0] === undefined) {
+          alert("No se encuentra la ciudad, por favor intenta otro nombre");
+        } else {
+          console.log(resp.data);
+          setIsLoading(true);
+          
+        }
   
         return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${resp.data[0].lat}&lon=${resp.data[0].lon}&appid=${apiKey}&lang=es&units=metric`);
       })
